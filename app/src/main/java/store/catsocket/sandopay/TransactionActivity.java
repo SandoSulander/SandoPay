@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/* From this Activity the user can view all his/hers account transactions and Request to make one.*/
+
 public class TransactionActivity extends AppCompatActivity implements OnNavigationItemSelectedListener {
     public static final int TRANSFER_MONEY_REQUEST = 4;
 

@@ -18,7 +18,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
    The Class Extends From RoomDatabase. Room is a persistence library that provides an abstraction
    layer over SQLite to allow for more robust database access while harnessing the full power of SQLite.*/
 
-@Database(entities = {User.class, DebitAccount.class, AccountTransaction.class}, version = 29)  //If DataBase gets Corrupted OR Changes on the Schema is made --> increment version +1
+@Database(entities = {User.class, DebitAccount.class, AccountTransaction.class}, version = 29)  //If DataBase gets Corrupted OR Changes on the Schema are made --> increment version +1
 @TypeConverters({Converters.class}) // Converter for Date
 public abstract class BankAccountDatabase extends RoomDatabase {
 

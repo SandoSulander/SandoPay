@@ -22,6 +22,9 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 
+/* From this Activity, the user can make desired Changes on the User Information
+   or Delete the Account. */
+
 public class EditProfileActivity extends AppCompatActivity {
 
     // Intent Extra Variables for Passing them further to Insert/Update to the Database

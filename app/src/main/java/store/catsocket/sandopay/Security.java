@@ -1,5 +1,7 @@
 package store.catsocket.sandopay;
 
+/* This is class is mean for Security purposes but is still on progress. */
+
 public class Security {
 
     private int counter;

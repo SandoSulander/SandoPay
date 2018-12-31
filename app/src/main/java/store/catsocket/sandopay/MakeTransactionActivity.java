@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/* This Activity is for making a monetary transaction from Account A to B */
 
 public class MakeTransactionActivity extends AppCompatActivity  {
 

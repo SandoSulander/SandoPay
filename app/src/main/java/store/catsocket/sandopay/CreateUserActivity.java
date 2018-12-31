@@ -14,6 +14,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/* This Activity is for User Creation Information input purposes. */
+
 public class CreateUserActivity extends AppCompatActivity {
 
     // Intent Extra Variables for Passing them further to Insert/Update to the Database

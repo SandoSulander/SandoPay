@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/* From This Activity the User can View his/her Profile/User information and Request to edit it. */
+
 public class ProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     public static final int EDIT_USER_REQUEST = 5;
@@ -42,8 +44,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        // Floating Action Button on the Home Screen
-
+        // Floating Action Button on the Profile View. SWhen clicked, requests an edit for the User Information and starts the process.
         FloatingActionButton buttonAddAccount = findViewById(R.id.button_add_account);
         buttonAddAccount.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -4,6 +4,8 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+/* This is the User Entity Class which holds all the information on a singe User */
+
 @Entity(tableName = "user_table")
 public class User {
 
