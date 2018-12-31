@@ -13,21 +13,24 @@ import androidx.room.Update;
    DAO stands for Data Access Object is this specific DAO
    a part of Room library created by Google Android */
 @Dao
-public interface DebitAccountDao {
+public interface UserDao {
 
     @Insert
-    void insert(DebitAccount debitAccount);
+    void insertUser(User user);
 
     @Update
-    void update(DebitAccount debitAccount);
+    void updateUser(User user);
 
     @Delete
-    void delete(DebitAccount debitAccount);
+    void deleteUser(User user);
 
-    @Query("DELETE FROM debit_account_table")
-    void deleteAllDebitAccounts();
+    @Query("DELETE FROM user_table")
+    void deleteAllUsers();
 
-    @Query("SELECT * FROM debit_account_table ORDER BY accountNumber ASC")
-    LiveData<List<DebitAccount>> getAllDebitAccounts();
+    @Query("SELECT * FROM user_table ORDER BY id ASC")
+    LiveData<List<User>> getAllUsers();
+
+    @Query("SELECT * FROM user_table WHERE email ='Admin' and password = '1234'")
+    LiveData<List<User>> getUser();
 
 }

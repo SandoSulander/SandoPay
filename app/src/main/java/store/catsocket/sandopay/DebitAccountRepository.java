@@ -7,10 +7,17 @@ import java.util.List;
 
 import androidx.lifecycle.LiveData;
 
+/* A Repository serves as an additional abstraction layer. With Repository,
+   it is possible to mediate in between different DataSources therefore, it is
+   considered as best practice. */
+
 public class DebitAccountRepository {
 
     private DebitAccountDao debitAccountDao;
+
     private LiveData<List<DebitAccount>> allDebitAccounts;
+
+    // DAO Interface & DataBase
 
     public DebitAccountRepository(Application application) {
         BankAccountDatabase database = BankAccountDatabase.getInstance(application);
@@ -40,6 +47,8 @@ public class DebitAccountRepository {
         return allDebitAccounts;
     }
 
+
+    //  AsyncTasks to perform background operations and publish results on the UI thread without having to manipulate threads and/or handlers
 
     private static class InsertDebitAccountAsyncTask extends AsyncTask<DebitAccount, Void, Void> {
         private DebitAccountDao debitAccountDao;
@@ -72,8 +81,8 @@ public class DebitAccountRepository {
     private static class DeleteDebitAccountAsyncTask extends AsyncTask<DebitAccount, Void, Void> {
         private DebitAccountDao debitAccountDao;
 
-        private DeleteDebitAccountAsyncTask(DebitAccountDao debitAccountDaoDao) {
-            this.debitAccountDao = debitAccountDaoDao;
+        private DeleteDebitAccountAsyncTask(DebitAccountDao debitAccountDao) {
+            this.debitAccountDao = debitAccountDao;
         }
 
         @Override

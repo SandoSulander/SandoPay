@@ -16,8 +16,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AccountActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".AccountActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddEditAccountActivity"
+            android:parentActivityName=".AccountActivity" />
+        <activity
+            android:name=".TransactionActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MakeTransactionActivity"
+            android:parentActivityName=".TransactionActivity" />
+        <activity
+            android:name=".ProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateUserActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".EditProfileActivity"></activity>
     </application>
 
 </manifest>
