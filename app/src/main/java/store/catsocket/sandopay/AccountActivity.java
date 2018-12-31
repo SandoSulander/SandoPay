@@ -34,6 +34,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+/* This Activity is responsible for Accounts View UI for the user.
+   Furthermore, from this activity, the user can request an add account process.*/
+
 public class AccountActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     // Request Code For Add and Edit Account Intent

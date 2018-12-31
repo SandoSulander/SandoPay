@@ -91,7 +91,7 @@ public class TransactionActivity extends AppCompatActivity implements OnNavigati
                         submitList.add(accountTransactions.get(i));
                     }
                 }
-                transactionAdapter.setAccountTransactions(submitList);
+                transactionAdapter.submitList(submitList);
             }
         });
         // ViewModel for all DebitAccounts
@@ -205,7 +205,6 @@ public class TransactionActivity extends AppCompatActivity implements OnNavigati
 
                 System.out.println("##########################################################################   " + intent.getStringExtra(MakeTransactionActivity.EXTRA_FROM_ACCOUNT)); // De-bug
 
-
                 // Get fromAccount id & balance
                 for (int i2 = 0; i2 < list.size(); i2++) {
                     if (list.get(i2).getAccountNumber().equals(fromAccount)) {
@@ -274,15 +273,15 @@ public class TransactionActivity extends AppCompatActivity implements OnNavigati
                         bankAccountViewModel.insertAccountTransaction(accountTransactionTo);
                     }
 
-
                     Toast.makeText(TransactionActivity.this, transaction + "€ sent to " + toAccount, Toast.LENGTH_LONG).show();
                     break;
                 }
-            } else{
+            } else {
                 Toast.makeText(this, "Account Number doesn't exist.", Toast.LENGTH_SHORT).show();
             }
             in++;
         }
+
     }
 
     public Intent setThisIntent(Intent data) {

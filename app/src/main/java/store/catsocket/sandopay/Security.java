@@ -1,6 +1,8 @@
 package store.catsocket.sandopay;
 
-/* This is class is mean for Security purposes but is still on progress. */
+/* This is class is meant for Security purposes but is still on progress.
+   Instead of Singleton, it is planned to add as an Entity to the Database
+   and add more functionality to it. */
 
 public class Security {
 

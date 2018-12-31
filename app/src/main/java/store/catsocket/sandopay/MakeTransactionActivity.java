@@ -24,7 +24,7 @@ import java.util.List;
 
 /* This Activity is for making a monetary transaction from Account A to B */
 
-public class MakeTransactionActivity extends AppCompatActivity  {
+public class MakeTransactionActivity extends AppCompatActivity {
 
     public static final String EXTRA_FROM_ACCOUNT =
             "store.catsocket.sandopay.EXTRA_FROM_ACCOUNT";
@@ -78,79 +78,89 @@ public class MakeTransactionActivity extends AppCompatActivity  {
         });
 
     }
-    // Gets DebitAccounts from ViewModel and Displays them as a Drop Down List
-    public void createAccountNumberDropDown(List<DebitAccount> debitAccounts){
-            ArrayList<String> accountList = new ArrayList<String>();
-            for(int i=0; i<debitAccounts.size() ; i++) {
-                String accountNumber = debitAccounts.get(i).getAccountNumber() + " (" + debitAccounts.get(i).getBalance() + "€)";
-                accountList.add(accountNumber);
-                setAccountList(debitAccounts);
-            }
 
-            String[] debitAccountArray = accountList.toArray(new String[accountList.size()]);
-            ArrayAdapter aa = new ArrayAdapter(this, android.R.layout.simple_spinner_item, debitAccountArray );
-            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            fromAccountSpinner.setAdapter(aa);
+    // Gets DebitAccounts from ViewModel and Displays them as a Drop Down List
+    public void createAccountNumberDropDown(List<DebitAccount> debitAccounts) {
+        ArrayList<String> accountList = new ArrayList<String>();
+        for (int i = 0; i < debitAccounts.size(); i++) {
+            String accountNumber = debitAccounts.get(i).getAccountNumber() + " (" + debitAccounts.get(i).getBalance() + "€)";
+            accountList.add(accountNumber);
+            setAccountList(debitAccounts);
+        }
+
+        String[] debitAccountArray = accountList.toArray(new String[accountList.size()]);
+        ArrayAdapter aa = new ArrayAdapter(this, android.R.layout.simple_spinner_item, debitAccountArray);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        fromAccountSpinner.setAdapter(aa);
     }
 
     // Finalizes The Money Transaction Operation (Euro-sign Button in the Action-bar)
-    private void transferMoney(){
+    private void transferMoney() {
+        try {
+            int balance = 0;
+            Intent data = new Intent();
 
-        int balance = 0;
-        Intent data = new Intent();
+            XMLwriter xmlWriter = new XMLwriter();
+            String id = "";
 
-        XMLwriter xmlWriter = new XMLwriter();
-        String id = "";
+            String fromAccountLong = fromAccountSpinner.getSelectedItem().toString();
+            String fromAccount = fromAccountLong.substring(0, 7);
+            String toAccount = editToAccountNumber.getText().toString();
+            String message = editTextMessage.getText().toString();
+            String amount = editTextAmount.getText().toString(); // Transfer amount
+            int amountInt = Integer.parseInt(amount);
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            DateFormat dateFormat2 = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+            Date timeStamp = new Date();
+            String timeStampString = dateFormat.format(timeStamp);
+            String timeStampString2 = dateFormat2.format(timeStamp);
 
-        String fromAccountLong = fromAccountSpinner.getSelectedItem().toString();
-        String fromAccount = fromAccountLong.substring(0,7);
-        String toAccount = editToAccountNumber.getText().toString();
-        String message = editTextMessage.getText().toString();
-        String amount = editTextAmount.getText().toString(); // Transfer amount
-        int amountInt = Integer.parseInt(amount);
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        DateFormat dateFormat2 = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-        Date timeStamp = new Date();
-        String timeStampString = dateFormat.format(timeStamp);
-        String timeStampString2 = dateFormat2.format(timeStamp);
 
-        System.out.println("##############"+fromAccountLong+"       "+fromAccount+"       "+toAccount+"       "+message+"       "+amount+"       "+timeStampString); //De-bug
+            System.out.println("##############" + fromAccountLong + "       " + fromAccount + "       " + toAccount + "       " + message + "       " + amount + "       " + timeStampString); //De-bug
 
-        for (int i = 0; i < debitAccountsList.size(); i++) {
-            if (debitAccountsList.get(i).getAccountNumber().equals(fromAccount)) {
-                balance = debitAccountsList.get(i).getBalance();
-                break;
-            }
-        }
-
-        if (toAccount.trim().isEmpty() || message.trim().isEmpty() || amount.trim().isEmpty()){
-            Toast.makeText(this, "Fill empty fields.", Toast.LENGTH_SHORT).show();
-            setResult(RESULT_CANCELED, data);
-            finish();
-        } else if (balance < amountInt){
-            setResult(RESULT_CANCELED, data);
-            finish();
-            Toast.makeText(this, "Not enough money on the account. Cannot proceed!", Toast.LENGTH_SHORT).show();
-        } else {
             for (int i = 0; i < debitAccountsList.size(); i++) {
                 if (debitAccountsList.get(i).getAccountNumber().equals(fromAccount)) {
-                    id = Integer.toString(debitAccountsList.get(i).getId());
+                    balance = debitAccountsList.get(i).getBalance();
                     break;
                 }
             }
-            xmlWriter.saveToXML("transaction_accountId_"+id+"_"+timeStampString2+".xml", fromAccount,toAccount,message,timeStampString,amount);
-            Toast.makeText(this , "XML-File created.", Toast.LENGTH_SHORT).show();
 
-            data.putExtra(EXTRA_FROM_ACCOUNT, fromAccount);
-            data.putExtra(EXTRA_TO_ACCOUNT, toAccount);
-            data.putExtra(EXTRA_MESSAGE, message);
-            data.putExtra(EXTRA_AMOUNT, amount);
-            data.putExtra(EXTRA_TIME_STAMP, timeStampString);
+            if (toAccount.trim().isEmpty() || message.trim().isEmpty() || amount.trim().isEmpty()) {
+                Toast.makeText(this, "Fill empty fields.", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_CANCELED, data);
+                finish();
+            } else if (balance < amountInt) {
+                setResult(RESULT_CANCELED, data);
+                finish();
+                Toast.makeText(this, "Not enough money on the account. Cannot proceed!", Toast.LENGTH_SHORT).show();
+            } else {
+                for (int i = 0; i < debitAccountsList.size(); i++) {
+                    if (debitAccountsList.get(i).getAccountNumber().equals(fromAccount)) {
+                        id = Integer.toString(debitAccountsList.get(i).getId());
+                        break;
+                    }
+                }
+                xmlWriter.saveToXML("transaction_accountId_" + id + "_" + timeStampString2 + ".xml", fromAccount, toAccount, message, timeStampString, amount);
+                Toast.makeText(this, "XML-File created.", Toast.LENGTH_SHORT).show();
 
-            setResult(RESULT_OK, data);
-            finish();
+                data.putExtra(EXTRA_FROM_ACCOUNT, fromAccount);
+                data.putExtra(EXTRA_TO_ACCOUNT, toAccount);
+                data.putExtra(EXTRA_MESSAGE, message);
+                data.putExtra(EXTRA_AMOUNT, amount);
+                data.putExtra(EXTRA_TIME_STAMP, timeStampString);
+
+                setResult(RESULT_OK, data);
+                finish();
+            }
         }
+    catch(
+    NumberFormatException nfe)
+    {
+        Toast.makeText(this, "Transaction not made! Transaction can't be that large!", Toast.LENGTH_SHORT).show();
     }
+
+}
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

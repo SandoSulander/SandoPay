@@ -5,13 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -43,6 +46,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private TextView textOldPassword;
     private Button deleteAccountButton;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,29 +56,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
         // Disable DeleteButton
         deleteAccountButton = (Button) findViewById(R.id.delete_account_button);
-        deleteAccountButton.setEnabled(false);
-
-       /* String validatePassword = users.get(0).getPassword();
-
-        editOldPassword.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String newText = editOldPassword.getText().toString();
-
-                textOldPassword.setText(newText);
-            }
-        });
-
-        if(validatePassword.equals(textOldPassword.toString())){
-            deleteAccountButton.setEnabled(true);
-        } */
 
 
         // Text Elements
@@ -190,6 +171,32 @@ public class EditProfileActivity extends AppCompatActivity {
 
     public void setUserList(List<User> userList){
         this.users = (ArrayList<User>) userList;
+    }
+
+
+    /* Deletes the User on Button Click if Old Password is Correct */
+
+    public void deleteUser(View view){
+        BankAccountViewModel bankAccountViewModel = ViewModelProviders.of(this).get(BankAccountViewModel.class);
+        String validatePassword = users.get(0).getPassword();
+        String oldPassword = editOldPassword.getText().toString();
+        Intent intentLogout = new Intent(EditProfileActivity.this, MainActivity.class);
+        if (oldPassword.equals(validatePassword)){
+            User user = users.get(0);
+            bankAccountViewModel.deleteUser(user);
+            Toast.makeText(this, "User successfully deleted!", Toast.LENGTH_SHORT).show();
+            SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.clear();
+            editor.apply();
+            intentLogout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intentLogout);
+            MainActivity mainActivity = new MainActivity();
+            mainActivity.setLogin();
+
+        } else {
+            Toast.makeText(this, "Insert correct password first.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

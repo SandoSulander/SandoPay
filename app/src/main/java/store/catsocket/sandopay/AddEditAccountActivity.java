@@ -1,6 +1,9 @@
 package store.catsocket.sandopay;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -10,6 +13,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/* From this activity the user can input data for either to add or edit an Account */
 
 public class AddEditAccountActivity extends AppCompatActivity {
 
@@ -21,6 +29,9 @@ public class AddEditAccountActivity extends AppCompatActivity {
             "store.catsocket.sandopay.EXTRA_TITLE";
     public static final String EXTRA_BALANCE =
             "store.catsocket.sandopay.EXTRA_DESCRIPTION";
+
+    BankAccountViewModel bankAccountViewModel;
+    ArrayList<DebitAccount> debitAccounts = new ArrayList<DebitAccount>();
 
     //TODO Credit
     private EditText editAccountNumber;
@@ -40,6 +51,15 @@ public class AddEditAccountActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
+        bankAccountViewModel = ViewModelProviders.of(this).get(BankAccountViewModel.class);
+        bankAccountViewModel.getAllDebitAccounts().observe(this, new Observer<List<DebitAccount>>() {
+            @Override
+            public void onChanged(@Nullable List<DebitAccount> debitAccounts) {
+                ArrayList<DebitAccount> newDebitAccounts = (ArrayList<DebitAccount>) debitAccounts;
+                setDebitAccounts(newDebitAccounts);
+            }
+        });
+
         // Check if Edit or Add DebitAccount --> If there is an ID, there is an existing Account --> Edit
         if (intent.hasExtra(EXTRA_ID)){
             setTitle("Edit an Account");
@@ -54,30 +74,41 @@ public class AddEditAccountActivity extends AppCompatActivity {
     }
     // Method for Saving the Account (Requires clicking the "Save" -button.
     private void saveAccount () {
-        String accountNumber = editAccountNumber.getText().toString();
-        String balance = editBalance.getText().toString();
-        int balanceInt = Integer.parseInt(balance);
+        try {
 
-        // Check for empty fields
-        if(accountNumber.trim().isEmpty()||balance.trim().isEmpty()){
-            Toast.makeText(this, "Empty fields. Please fill all the fields.", Toast.LENGTH_SHORT).show();
-        }  else if (balanceInt < 0){
-            Toast.makeText(this, "Can't add negative balance.", Toast.LENGTH_SHORT).show();
-        } else {
-
-            //TODO Credit
             Intent data = new Intent();
-            data.putExtra(EXTRA_ACCOUNT_NUMBER, accountNumber);
-            data.putExtra(EXTRA_BALANCE, balance);
+            String accountNumber = editAccountNumber.getText().toString();
+            String balance = editBalance.getText().toString();
+            int balanceInt = Integer.parseInt(balance);
 
-            // Check if the ID needs to be updated (Edit DebitAccount situation)
-            int id = getIntent().getIntExtra(EXTRA_ID, -1);
-            if (id != -1) {
-                data.putExtra(EXTRA_ID, id);
+            for (int i = 0; i < debitAccounts.size(); i++) {
+                if (debitAccounts.get(i).getAccountNumber().equals(accountNumber)) {
+                    Toast.makeText(this, "Account number already exists. Select another one.", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_CANCELED, data);
+                    finish();
+                } else if (accountNumber.trim().isEmpty() || balance.trim().isEmpty()) {
+                    Toast.makeText(this, "Empty fields. Please fill all the fields.", Toast.LENGTH_SHORT).show();
+                } else if (balanceInt < 0) {
+                    Toast.makeText(this, "Can't add negative balance.", Toast.LENGTH_SHORT).show();
+                } else {
+
+                    //TODO Credit
+                    data.putExtra(EXTRA_ACCOUNT_NUMBER, accountNumber);
+                    data.putExtra(EXTRA_BALANCE, balance);
+
+                    // Check if the ID needs to be updated (Edit DebitAccount situation)
+                    int id = getIntent().getIntExtra(EXTRA_ID, -1);
+                    if (id != -1) {
+                        data.putExtra(EXTRA_ID, id);
+                    }
+
+                    setResult(RESULT_OK, data);
+                    finish();
+                }
             }
 
-            setResult(RESULT_OK, data);
-            finish();
+        } catch (NumberFormatException nfe) {
+            Toast.makeText(this, "Insert integer as a balance.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -99,5 +130,9 @@ public class AddEditAccountActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void setDebitAccounts(List<DebitAccount> debitAccounts){
+        this.debitAccounts = (ArrayList<DebitAccount>) debitAccounts;
     }
 }
